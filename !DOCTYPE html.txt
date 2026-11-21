@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Батя в здании</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 15px 0;
+            color: #fbbf24;
+            text-transform: uppercase;
+        }
+        .photo-frame {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 4px solid #fbbf24;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+            background: #334155;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .stats {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        .stats span {
+            color: #fbbf24;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .quote-box {
+            min-height: 50px;
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn {
+            background-color: #fbbf24;
+            color: #0f172a;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        .btn:hover { background-color: #f59e0b; }
+        .btn:active { transform: scale(0.96); }
+        .btn-secondary { background-color: #334155; color: #ffffff; }
+        .btn-secondary:hover { background-color: #475569; }
+        .btn-danger { background-color: #ef4444; color: #ffffff; }
+        .btn-danger:hover { background-color: #dc2626; }
+        
+        @keyframes shake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, -2px) rotate(-1deg); }
+            40% { transform: translate(3px, 2px) rotate(1deg); }
+            60% { transform: translate(-2px, 1px) rotate(0deg); }
+            80% { transform: translate(2px, -1px) rotate(1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+        .shaking { animation: shake 0.4s infinite; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="mainCard">
+        <h1>Батя в здании</h1>
+        
+        <div class="photo-frame" id="photoFrame">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 400 280'><rect width='400' height='280' fill='%23334155'/><circle cx='200' cy='250' r='130' fill='%23ffffff'/><path d='M130 140 Q200 180 270 140 L290 280 L110 280 Z' fill='%23e2e8f0'/><circle cx='200' cy='105' r='55' fill='%23fed7aa'/><path d='M145 95 Q140 50 200 50 Q260 50 255 95' fill='none' stroke='%2394a3b8' stroke-width='12' stroke-linecap='round'/><circle cx='180' cy='95' r='5' fill='%231e293b'/><circle cx='220' cy='95' r='5' fill='%231e293b'/><path d='M170 120 Q200 108 230 120 Q200 132 170 110 Z' fill='%2364748b'/><path d='M185 135 Q200 145 215 135' fill='none' stroke='%239a3412' stroke-width='3' stroke-linecap='round'/><rect x='275' y='190' width='45' height='60' rx='6' fill='%23fbbf24'/><path d='M320 200 H335 V240 H320' fill='none' stroke='%23fbbf24' stroke-width='6'/><path d='M275 190 Q297 175 320 190 Z' fill='%23ffffff'/></svg>" alt="Батя">
+        </div>
+
+        <div class="stats">
+            Съедено пельменей: <span id="pelmeniCount">0</span> шт.<br>
+            Уровень массы: <strong id="rank">Лёгкий перекус</strong>
+        </div>
+
+        <div class="quote-box" id="quoteBox">
+            Нажми на кнопку, чтобы услышать мудрость...
+        </div>
+
+        <div class="buttons">
+            <button class="btn" onclick="feedBatya()">🥟 Покормить пельменями (+1)</button>
+            <button class="btn btn-secondary" onclick="newQuote()">💬 Выдать батину цитату</button>
+            <button class="btn btn-danger" onclick="toggleSnore()" id="snoreBtn">💤 Включить режим храпа</button>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+        let isSnoring = false;
+
+        const quotes = [
+            "«Я не сплю, я просто глаза прикрыл, телевизор слушаю!»",
+            "«Выключи свет, мы что, за электричество мало платим?!»",
+            "«В моё время такой ерунды не было...»",
+            "«Майонеза много не бывает.»",
+            "«Кто последний пульт брал? Положите на место!»",
+            "«Я не толстый, это комок нервов и авторитета.»",
+            "«Сейчас полежу пять минут и пойду дела делать...»"
+        ];
+
+        function feedBatya() {
+            count++;
+            document.getElementById('pelmeniCount').innerText = count;
+            
+            let scale = 1 + (count * 0.005);
+            if (scale > 1.25) scale = 1.25;
+            document.getElementById('photoFrame').style.transform = `scale(${scale})`;
+
+            const rankEl = document.getElementById('rank');
+            if (count >= 50) rankEl.innerText = "Абсолютный гигачад дивана 🏆";
+            else if (count >= 30) rankEl.innerText = "Тяжёлая артиллерия 🚜";
+            else if (count >= 15) rankEl.innerText = "Солидный мужчина 😎";
+            else if (count >= 5) rankEl.innerText = "Разогревается 🥟";
+        }
+
+        function newQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            document.getElementById('quoteBox').innerText = quotes[randomIndex];
+        }
+
+        function toggleSnore() {
+            const card = document.getElementById('mainCard');
+            const btn = document.getElementById('snoreBtn');
+            isSnoring = !isSnoring;
+
+            if (isSnoring) {
+                card.classList.add('shaking');
+                btn.innerText = "🛑 Разбудить батю (ХРРР-ПШШШ)";
+            } else {
+                card.classList.remove('shaking');
+                btn.innerText = "💤 Включить режим храпа";
+            }
+        }
+    </script>
+
+</body>
+</html>
